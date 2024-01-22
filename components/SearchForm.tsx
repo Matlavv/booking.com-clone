@@ -1,18 +1,17 @@
-'use client'
+"use client";
 
+import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { BedDoubleIcon, CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { BedDoubleIcon, CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Calendar } from "./ui/calendar";
-
 
 export const formSchema = z.object({
   location: z.string().min(2, "One piece > all").max(50),
@@ -49,7 +47,7 @@ function SearchForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      location:"",
+      location: "",
       dates: {
         from: undefined,
         to: undefined,
@@ -60,49 +58,47 @@ function SearchForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-
-  }
+  function onSubmit(values: z.infer<typeof formSchema>) {}
 
   return (
-  <Form {...form}>
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="flex flex-col lg:flex-row lg:max-w-6xl lg!mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg"
-    >
-      {/* Location */}
-      <div className="grid w-full lg:max-w-sm items-center gap-1.5">
-        <FormField 
-          control={form.control}
-          name="location"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel className="text-white flex">
-                <BedDoubleIcon className="ml-2 h-4 w-4 text-white" />
-              </FormLabel>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col lg:flex-row lg:max-w-6xl lg!mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg"
+      >
+        {/* Location */}
+        <div className="grid w-full lg:max-w-sm items-center gap-1.5">
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-white flex">
+                  <BedDoubleIcon className="ml-2 h-4 w-4 text-white" />
+                </FormLabel>
 
-              <FormMessage />
+                <FormMessage />
 
-              <FormControl>
-                <Input placeholder="Fuschia, East Blue" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div>
-      {/* Dates */}
-      <div className="grid w-full lg:max-w-sm flex-1 items-center gap-1.5">
-        <FormField 
-          control={form.control}
-          name="dates"
-          render={({field}) => (
-            <FormItem className="flex flex-col">
-              <FormLabel className="text-white">Dates</FormLabel>
-              <FormMessage />
-              
-              <Popover>
-                <PopoverTrigger asChild>
                 <FormControl>
+                  <Input placeholder="Fuschia, East Blue" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* Dates */}
+        <div className="grid w-full lg:max-w-sm flex-1 items-center gap-1.5">
+          <FormField
+            control={form.control}
+            name="dates"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel className="text-white">Dates</FormLabel>
+                <FormMessage />
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
                       <Button
                         id="date"
                         name="dates"
@@ -127,8 +123,8 @@ function SearchForm() {
                         )}
                       </Button>
                     </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       initialFocus
                       mode="range"
@@ -141,14 +137,63 @@ function SearchForm() {
                       }
                     />
                   </PopoverContent>
-              </Popover>
-            </FormItem>
-          )}
-        />
-      </div>
-    </form>
-  </Form>
+                </Popover>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex w-full items-center space-x-2">
+          <div className="grid items-center flex-1">
+            <FormField
+              control={form.control}
+              name="adults"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-white">Adults</FormLabel>
+                  <FormMessage />
+                  <FormControl>
+                    <Input type="number" placeholder="Adults" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid items-center flex-1">
+            <FormField
+              control={form.control}
+              name="children"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-white">Children</FormLabel>
+                  <FormMessage />
+                  <FormControl>
+                    <Input type="number" placeholder="Children" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid items-center flex-1">
+            <FormField
+              control={form.control}
+              name="rooms"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-white">Rooms</FormLabel>
+                  <FormMessage />
+                  <FormControl>
+                    <Input type="number" placeholder="rooms" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+      </form>
+    </Form>
   );
 }
 
-export default SearchForm
+export default SearchForm;
