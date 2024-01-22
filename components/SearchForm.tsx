@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { Calendar } from "./ui/calendar";
 
 export const formSchema = z.object({
-  location: z.string().min(2, "One piece > all").max(50),
+  location: z.string().min(2).max(50),
   dates: z.object({
     from: z.date(),
     to: z.date(),
@@ -58,15 +58,36 @@ function SearchForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+
+    const checkin_monthday = values.dates.from.getDate().toString();
+    const checkin_month = (values.dates.from.getMonth() + 1).toString();
+    const checkin_year = values.dates.from.getFullYear().toString();
+    const checkout_monthday = values.dates.to.getDate().toString();
+    const checkout_month = (values.dates.to.getMonth() + 1).toString();
+    const checkout_year = values.dates.to.getFullYear().toString();
+
+    const checkin = `${checkin_year}-${checkin_month}-${checkin_monthday}`;
+    const checkout = `${checkout_year}-${checkout_month}-${checkout_monthday}`;
+
+    const url = new URL("https://www.booking.com/searchresults.html");
+    url.searchParams.set("ss", values.location);
+    url.searchParams.set("group_adults", values.adults);
+    url.searchParams.set("group_children", values.children);
+    url.searchParams.set("no_rooms", values.rooms);
+    url.searchParams.set("checkin", checkin);
+    url.searchParams.set("checkout", checkout);
+
+    router.push(`/search?url=${url.href}`);
+  }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col lg:flex-row lg:max-w-6xl lg!mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg"
+        className="flex flex-col lg:flex-row lg:max-w-6xl lg:mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg"
       >
-        {/* Location */}
         <div className="grid w-full lg:max-w-sm items-center gap-1.5">
           <FormField
             control={form.control}
@@ -74,6 +95,7 @@ function SearchForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-white flex">
+                  Location
                   <BedDoubleIcon className="ml-2 h-4 w-4 text-white" />
                 </FormLabel>
 
@@ -86,7 +108,7 @@ function SearchForm() {
             )}
           />
         </div>
-        {/* Dates */}
+
         <div className="grid w-full lg:max-w-sm flex-1 items-center gap-1.5">
           <FormField
             control={form.control}
@@ -142,6 +164,7 @@ function SearchForm() {
             )}
           />
         </div>
+
         <div className="flex w-full items-center space-x-2">
           <div className="grid items-center flex-1">
             <FormField
@@ -189,6 +212,12 @@ function SearchForm() {
                 </FormItem>
               )}
             />
+          </div>
+
+          <div className="mt-auto">
+            <Button type="submit" className="bg-blue-500 text-base">
+              Search
+            </Button>
           </div>
         </div>
       </form>
